@@ -127,21 +127,7 @@ def create_process_table():
     conn.commit()
     conn.close()
 
-
-if __name__ == "__main__":
-
-    create_table()
-
-    create_resource_usage_table()
-
-    create_process_table()
-
-    create_alert_table()
-
-    print("Database tables created successfully.")
-
-
-def create_process_table():
+def create_ml_table():
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -159,3 +145,19 @@ def create_process_table():
     ''')
     conn.commit()
     conn.close()
+
+if __name__ == "__main__":
+
+    create_table()
+
+    create_resource_usage_table()
+
+    create_process_table()
+
+    create_alert_table()
+
+    create_ml_table()
+
+    print("Database tables created successfully.")
+
+

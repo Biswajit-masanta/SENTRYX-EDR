@@ -3,7 +3,7 @@ from pyexpat import features
 from fastapi import FastAPI,Request
 from models.report import Report
 from database.operations import insert_sys_info, insert_resource_usage, get_system_id, get_all_alert , get_all_resource_usage , get_all_system , save_one_process , get_all_process , process_exists , delete_missing_processes , update_process, save_ml_prediction , get_latest_ml_prediction
-from database.scheme import create_alert_table, create_table, create_resource_usage_table , create_process_table
+from database.scheme import create_alert_table, create_table, create_resource_usage_table , create_process_table, create_ml_table
 from database.rules import resource_analyzer
 from fastapi.middleware.cors import CORSMiddleware
 from ml.feature_extractor import extract_features
@@ -24,6 +24,9 @@ def init_db():
 
     print("Creating process_table")
     create_process_table()
+
+    print("Creating ml_table")
+    create_ml_table()
 
 @app.get("/")
 def home():
