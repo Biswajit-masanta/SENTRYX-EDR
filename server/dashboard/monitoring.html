@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Resource Monitoring · SENTRYX EDR</title>
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-page="monitoring">
+
+<div class="sidebar-scrim" id="sidebarScrim"></div>
+<div class="app-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04141a" stroke-width="2"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"/></svg>
+      </div>
+      <div class="brand-text">
+        <span class="name">SENTRYX</span>
+        <span class="sub">Behavioral EDR</span>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operations</div>
+    <nav class="nav">
+      <a href="dashboard.html" class="nav-item" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="systems.html" class="nav-item" data-page="systems">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="6" rx="1.4"/><rect x="3" y="14" width="18" height="6" rx="1.4"/><circle cx="7" cy="7" r=".6" fill="currentColor"/><circle cx="7" cy="17" r=".6" fill="currentColor"/></svg>
+        <span>Systems</span>
+      </a>
+      <a href="monitoring.html" class="nav-item" data-page="monitoring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
+        <span>Monitoring</span>
+      </a>
+      <a href="alerts.html" class="nav-item" data-page="alerts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9a4 4 0 0 1 4 4v4H8v-4a4 4 0 0 1 4-4z"/><path d="M12 3v2M5 13H3M21 13h-2M6.3 6.3 5 5M17.7 6.3 19 5"/><rect x="6" y="17" width="12" height="3" rx="1"/></svg>
+        <span>Alerts</span>
+      </a>
+      <a href="processes.html" class="nav-item" data-page="processes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 10h10M4 14h12M4 18h8"/><circle cx="19" cy="15" r="3"/><path d="M19 12.5V12M19 18v-.5M16.8 13.3l-.35-.35M21.55 16.7l.35.35M16 15h-.5M22.5 15H22M16.8 16.7l-.35.35M21.55 13.3l.35-.35"/></svg>
+        <span>Processes</span>
+      </a>
+      <a href="anomalies.html" class="nav-item" data-page="anomalies">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-1.5 5.5A3 3 0 0 0 7 18a3 3 0 0 0 5 1.8A3 3 0 0 0 17 18a3 3 0 0 0 2.5-5.5A3 3 0 0 0 18 7a3 3 0 0 0-4-2.8A3 3 0 0 0 9 4z"/><path d="M9 4v16M15 4v16"/></svg>
+        <span>Anomaly Detection</span>
+        <span class="nav-badge">Beta</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="conn-pill" id="connPill">
+        <span class="live-dot"></span>
+        <span class="label">API</span>
+        <span class="stat">CHECKING</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="page-heading">
+        <h1>Resource Monitoring</h1>
+        <div class="crumb">
+          <span>Telemetry</span><span class="dot"></span>
+          <span class="live"><span class="live-dot"></span> Live</span>
+        </div>
+      </div>
+      <label class="topbar-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" placeholder="Search hosts, alerts, IOCs…" id="globalSearch" />
+      </label>
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="avatar">SC</div>
+    </header>
+    <main class="content">
+
+      <div class="monitor-controls">
+        <div class="left">
+          <select class="select" id="systemSelect">
+            <option value="">All systems (aggregated)</option>
+          </select>
+          <span class="metric-tag cyan" id="sampleMeta">— samples</span>
+        </div>
+        <div class="range-toggle" id="rangeToggle">
+          <button data-points="20" class="active">Last 20</button>
+          <button data-points="50">Last 50</button>
+          <button data-points="999">All</button>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="card chart-card">
+          <div class="panel-head">
+            <h3>CPU Usage</h3>
+            <span class="chart-value" id="cpuNow" style="color:var(--cyan)">—</span>
+          </div>
+          <div class="chart-canvas-wrap"><canvas id="cpuChart"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <div class="panel-head">
+            <h3>Memory Usage</h3>
+            <span class="chart-value" id="memNow" style="color:var(--violet)">—</span>
+          </div>
+          <div class="chart-canvas-wrap"><canvas id="memChart"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <div class="panel-head">
+            <h3>Disk Usage</h3>
+            <span class="chart-value" id="diskNow" style="color:var(--warning)">—</span>
+          </div>
+          <div class="chart-canvas-wrap"><canvas id="diskChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="section-title">Historical Trend</div>
+      <div class="card chart-card" id="trendCardWrap">
+        <div class="panel-head">
+          <h3>CPU · Memory · Disk over time</h3>
+          <span class="meta" id="trendMeta">—</span>
+        </div>
+        <div class="chart-canvas-wrap tall"><canvas id="trendChart"></canvas></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+/* ==========================================================================
+   Resource Monitoring page logic
+   GET /systems        -> populate the system selector
+   GET /resource-usage  -> drives all four charts (filtered by system_id)
+   ========================================================================== */
+(function(){
+  const { ICONS, getJSON, ENDPOINTS, normalizeSystem, normalizeUsage, errorState, POLL_INTERVAL_MS } = SENTRYX;
+
+  const systemSelect = document.getElementById("systemSelect");
+  const sampleMeta = document.getElementById("sampleMeta");
+  const rangeToggle = document.getElementById("rangeToggle");
+  const trendMeta = document.getElementById("trendMeta");
+
+  let pointLimit = 20;
+  let allUsage = [];
+  let charts = {};
+
+  function lineConfig(canvasId, color, fill) {
+    const canvas = document.getElementById(canvasId);
+    return new Chart(canvas, {
+      type: "line",
+      data: { labels: [], datasets: [{
+        data: [],
+        borderColor: color,
+        backgroundColor: fill,
+        borderWidth: 2,
+        tension: 0.35,
+        pointRadius: 0,
+        fill: true,
+      }]},
+      options: {
+        animation: { duration: 350 },
+        maintainAspectRatio: false,
+        scales: {
+          x: { display: false },
+          y: { min: 0, max: 100, grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#5d6b85", font: { size: 10 } } }
+        },
+        plugins: { legend: { display: false }, tooltip: { mode: "index", intersect: false } },
+      }
+    });
+  }
+
+  function trendConfig() {
+    const canvas = document.getElementById("trendChart");
+    return new Chart(canvas, {
+      type: "line",
+      data: { labels: [], datasets: [
+        { label: "CPU", data: [], borderColor: "#00d9ff", backgroundColor: "transparent", borderWidth: 2, tension: .35, pointRadius: 0 },
+        { label: "Memory", data: [], borderColor: "#8b6bff", backgroundColor: "transparent", borderWidth: 2, tension: .35, pointRadius: 0 },
+        { label: "Disk", data: [], borderColor: "#ffb020", backgroundColor: "transparent", borderWidth: 2, tension: .35, pointRadius: 0 },
+      ]},
+      options: {
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        scales: {
+          x: { ticks: { color: "#5d6b85", font: { size: 10 }, maxRotation: 0 }, grid: { display: false } },
+          y: { min: 0, max: 100, grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#5d6b85", font: { size: 10 } } }
+        },
+        plugins: { legend: { position: "top", align: "end", labels: { color: "#97a3ba", boxWidth: 10, font: { size: 11 } } } },
+      }
+    });
+  }
+
+  function initCharts() {
+    charts.cpu = lineConfig("cpuChart", "#00d9ff", "rgba(0,217,255,0.12)");
+    charts.mem = lineConfig("memChart", "#8b6bff", "rgba(139,107,255,0.14)");
+    charts.disk = lineConfig("diskChart", "#ffb020", "rgba(255,176,32,0.13)");
+    charts.trend = trendConfig();
+  }
+
+  function fmtLabel(ts) {
+    if (!ts) return "";
+    const d = new Date(ts.replace ? ts.replace(" ", "T") : ts);
+    return isNaN(d) ? "" : d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function updateCharts() {
+    const sysId = systemSelect.value;
+    let usage = sysId ? allUsage.filter(u => String(u.systemId) === String(sysId)) : allUsage;
+    usage = usage
+      .filter(u => u.timestamp)
+      .sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    const limited = pointLimit >= 999 ? usage : usage.slice(-pointLimit);
+    const labels = limited.map(u => fmtLabel(u.timestamp));
+
+    if (!limited.length) {
+      sampleMeta.textContent = "0 samples";
+      trendMeta.textContent = "No data yet";
+      Object.values(charts).forEach(c => { c.data.labels = []; c.data.datasets.forEach(ds => ds.data = []); c.update(); });
+      document.getElementById("cpuNow").textContent = "—";
+      document.getElementById("memNow").textContent = "—";
+      document.getElementById("diskNow").textContent = "—";
+      return;
+    }
+
+    sampleMeta.textContent = `${limited.length} samples`;
+    trendMeta.textContent = `${limited.length} samples · refreshed every 10s`;
+
+    const cpuData = limited.map(u => u.cpu);
+    const memData = limited.map(u => u.memory);
+    const diskData = limited.map(u => u.disk);
+
+    charts.cpu.data.labels = labels; charts.cpu.data.datasets[0].data = cpuData; charts.cpu.update();
+    charts.mem.data.labels = labels; charts.mem.data.datasets[0].data = memData; charts.mem.update();
+    charts.disk.data.labels = labels; charts.disk.data.datasets[0].data = diskData; charts.disk.update();
+
+    charts.trend.data.labels = labels;
+    charts.trend.data.datasets[0].data = cpuData;
+    charts.trend.data.datasets[1].data = memData;
+    charts.trend.data.datasets[2].data = diskData;
+    charts.trend.update();
+
+    const last = limited[limited.length - 1];
+    document.getElementById("cpuNow").textContent = last.cpu != null ? `${last.cpu.toFixed(1)}%` : "—";
+    document.getElementById("memNow").textContent = last.memory != null ? `${last.memory.toFixed(1)}%` : "—";
+    document.getElementById("diskNow").textContent = last.disk != null ? `${last.disk.toFixed(1)}%` : "—";
+  }
+
+  async function populateSystems() {
+    try {
+      const systems = (await getJSON(ENDPOINTS.systems)).map(normalizeSystem);
+      const current = systemSelect.value;
+      systemSelect.innerHTML = `<option value="">All systems (aggregated)</option>` +
+        systems.map(s => `<option value="${s.id}">${s.hostname}</option>`).join("");
+      if (current) systemSelect.value = current;
+    } catch (e) { /* selector falls back to "All systems" silently */ }
+  }
+
+  async function loadUsage() {
+    try {
+      const data = await getJSON(ENDPOINTS.resourceUsage);
+      allUsage = data.map(normalizeUsage);
+      updateCharts();
+    } catch (e) {
+      sampleMeta.textContent = "Connection error";
+      document.getElementById("trendCardWrap").querySelector(".chart-canvas-wrap").innerHTML = errorState(loadUsage, "resource telemetry");
+    }
+  }
+
+  rangeToggle.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    rangeToggle.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    pointLimit = parseInt(btn.dataset.points, 10);
+    updateCharts();
+  });
+  systemSelect.addEventListener("change", updateCharts);
+
+  initCharts();
+  populateSystems();
+  loadUsage();
+  setInterval(() => { populateSystems(); loadUsage(); }, POLL_INTERVAL_MS);
+})();
+</script>
+</body>
+</html>

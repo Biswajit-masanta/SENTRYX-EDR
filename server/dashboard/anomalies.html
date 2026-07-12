@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anomaly Detection · SENTRYX EDR</title>
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body data-page="anomalies">
+
+<div class="sidebar-scrim" id="sidebarScrim"></div>
+<div class="app-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04141a" stroke-width="2"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"/></svg>
+      </div>
+      <div class="brand-text">
+        <span class="name">SENTRYX</span>
+        <span class="sub">Behavioral EDR</span>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operations</div>
+    <nav class="nav">
+      <a href="dashboard.html" class="nav-item" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="systems.html" class="nav-item" data-page="systems">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="6" rx="1.4"/><rect x="3" y="14" width="18" height="6" rx="1.4"/><circle cx="7" cy="7" r=".6" fill="currentColor"/><circle cx="7" cy="17" r=".6" fill="currentColor"/></svg>
+        <span>Systems</span>
+      </a>
+      <a href="monitoring.html" class="nav-item" data-page="monitoring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
+        <span>Monitoring</span>
+      </a>
+      <a href="alerts.html" class="nav-item" data-page="alerts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9a4 4 0 0 1 4 4v4H8v-4a4 4 0 0 1 4-4z"/><path d="M12 3v2M5 13H3M21 13h-2M6.3 6.3 5 5M17.7 6.3 19 5"/><rect x="6" y="17" width="12" height="3" rx="1"/></svg>
+        <span>Alerts</span>
+      </a>
+      <a href="processes.html" class="nav-item" data-page="processes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 10h10M4 14h12M4 18h8"/><circle cx="19" cy="15" r="3"/><path d="M19 12.5V12M19 18v-.5M16.8 13.3l-.35-.35M21.55 16.7l.35.35M16 15h-.5M22.5 15H22M16.8 16.7l-.35.35M21.55 13.3l.35-.35"/></svg>
+        <span>Processes</span>
+      </a>
+      <a href="anomalies.html" class="nav-item" data-page="anomalies">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-1.5 5.5A3 3 0 0 0 7 18a3 3 0 0 0 5 1.8A3 3 0 0 0 17 18a3 3 0 0 0 2.5-5.5A3 3 0 0 0 18 7a3 3 0 0 0-4-2.8A3 3 0 0 0 9 4z"/><path d="M9 4v16M15 4v16"/></svg>
+        <span>Anomaly Detection</span>
+        <span class="nav-badge">Beta</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="conn-pill" id="connPill">
+        <span class="live-dot"></span>
+        <span class="label">API</span>
+        <span class="stat">CHECKING</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="page-heading">
+        <h1>Anomaly Detection</h1>
+        <div class="crumb">
+          <span>ML Behavioral Engine</span><span class="dot"></span>
+          <span class="live"><span class="live-dot"></span> Live</span>
+        </div>
+      </div>
+      <label class="topbar-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" placeholder="Search hosts, alerts, IOCs…" id="globalSearch" />
+      </label>
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="avatar">SC</div>
+    </header>
+
+    <main class="content">
+
+      <!-- System selector — same pattern as monitoring.html -->
+      <div class="monitor-controls" style="margin-bottom:18px">
+        <div class="left">
+          <select class="select" id="mlSystemSelect">
+            <option value="">Loading systems…</option>
+          </select>
+          <span class="metric-tag cyan" id="mlSystemMeta">select a system</span>
+        </div>
+      </div>
+
+      <div class="card coming-soon-hero">
+        <div>
+          <span class="eyebrow">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+            AI Powered
+          </span>
+          <h2>Behavioral anomaly detection is running on your fleet's telemetry.</h2>
+          <p>The Random Forest model scores deviations in process behavior and resource consumption. Results update every 10 seconds from the <span class="mono">/ml-status</span> endpoint.</p>
+
+          <div class="future-metrics">
+            <div class="future-metric">
+              <div class="lbl">Anomaly Score</div>
+              <div class="val" id="mlAnomalyScore">— / 100</div>
+            </div>
+            <div class="future-metric">
+              <div class="lbl">Detection Confidence</div>
+              <div class="val" id="mlConfidence">—%</div>
+            </div>
+            <div class="future-metric">
+              <div class="lbl">Risk Level</div>
+              <div class="val" id="mlRiskLevel">—</div>
+            </div>
+            <div class="future-metric">
+              <div class="lbl">Active Model</div>
+              <div class="val" id="mlModel">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="padding:18px;">
+            <div class="panel-head" style="margin-bottom:10px">
+              <h3 style="font-size:13px;color:var(--text-dim)">Risk Level Indicator</h3>
+            </div>
+            <div class="risk-scale">
+              <div class="seg r1" id="segLow"></div>
+              <div class="seg r2" id="segMed"></div>
+              <div class="seg r3" id="segHigh"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:7px;font-size:10.5px;color:var(--text-faint)">
+              <span>Low</span><span>Elevated</span><span>Critical</span>
+            </div>
+          </div>
+
+          <div class="card timeline-preview">
+            <div class="panel-head" style="margin-bottom:0">
+              <h3 style="font-size:13px;color:var(--text-dim)">Timeline View</h3>
+            </div>
+            <div class="timeline-track" id="timelineTrack">
+              <div class="axis"></div>
+              <div class="ghost-node" style="left:8%"></div>
+              <div class="ghost-node" style="left:34%"></div>
+              <div class="ghost-node" style="left:61%"></div>
+              <div class="ghost-node" style="left:87%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div id="anomalyEmptyState"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+/* ==========================================================================
+   Anomaly Detection page — GET /ml-status/{system_id} every 10s
+   system_id comes from the selector populated by GET /systems,
+   same pattern as monitoring.html.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  const { ICONS, ENDPOINTS, POLL_INTERVAL_MS, getJSON, normalizeSystem, errorState } = SENTRYX;
+
+  /* ── DOM refs ── */
+  const elAnomalyScore  = document.getElementById('mlAnomalyScore');
+  const elConfidence    = document.getElementById('mlConfidence');
+  const elRiskLevel     = document.getElementById('mlRiskLevel');
+  const elModel         = document.getElementById('mlModel');
+  const elSegLow        = document.getElementById('segLow');
+  const elSegMed        = document.getElementById('segMed');
+  const elSegHigh       = document.getElementById('segHigh');
+  const elEmptyState    = document.getElementById('anomalyEmptyState');
+  const systemSelect    = document.getElementById('mlSystemSelect');
+  const systemMeta      = document.getElementById('mlSystemMeta');
+
+  /* ── Risk helpers (unchanged) ── */
+  function updateRiskScale(prediction) {
+    const p = (prediction || '').toUpperCase();
+    elSegLow.style.opacity  = p === 'LOW'    ? '1' : '0.25';
+    elSegMed.style.opacity  = p === 'MEDIUM' ? '1' : '0.25';
+    elSegHigh.style.opacity = p === 'HIGH'   ? '1' : '0.25';
+  }
+
+  function riskColor(prediction) {
+    const p = (prediction || '').toUpperCase();
+    if (p === 'HIGH')   return 'var(--danger)';
+    if (p === 'MEDIUM') return 'var(--warning)';
+    return 'var(--success)';
+  }
+
+  /* ── Render (unchanged) ── */
+  function render(d) {
+    const pred = (d.prediction || '—').toUpperCase();
+    const conf = d.confidence != null ? d.confidence : '—';
+
+    const scoreMap = { LOW: '30 / 100', MEDIUM: '65 / 100', HIGH: '90 / 100' };
+    elAnomalyScore.textContent = scoreMap[pred] || '— / 100';
+    elAnomalyScore.style.color = riskColor(pred);
+
+    elConfidence.textContent   = conf !== '—' ? conf + '%' : '—%';
+    elConfidence.style.color   = riskColor(pred);
+
+    elRiskLevel.textContent    = pred;
+    elRiskLevel.style.color    = riskColor(pred);
+
+    elModel.textContent        = d.model ? `${d.model} v${d.version || '?'}` : '—';
+    elModel.style.color        = 'var(--cyan)';
+
+    updateRiskScale(pred);
+
+    elEmptyState.innerHTML = `
+      <div class="state-block" style="padding:28px 24px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:${riskColor(pred)}">
+          <path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-1.5 5.5A3 3 0 0 0 7 18a3 3 0 0 0 5 1.8A3 3 0 0 0 17 18a3 3 0 0 0 2.5-5.5A3 3 0 0 0 18 7a3 3 0 0 0-4-2.8A3 3 0 0 0 9 4z"/>
+          <path d="M9 4v16M15 4v16"/>
+        </svg>
+        <h4>Model: ${d.model || '—'} &nbsp;·&nbsp; Version: ${d.version || '—'}</h4>
+        <p>Latest prediction: <strong style="color:${riskColor(pred)}">${pred}</strong> &nbsp;·&nbsp;
+           Confidence: <strong>${conf}%</strong> &nbsp;·&nbsp;
+           Updated: ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'})}</p>
+      </div>`;
+  }
+
+  /* ── CHANGE: populate selector from /systems, default to first system ── */
+  async function populateSystems() {
+    try {
+      const systems = (await getJSON(ENDPOINTS.systems)).map(normalizeSystem);
+      const current = systemSelect.value;
+
+      systemSelect.innerHTML = systems
+        .map(s => `<option value="${s.id}">${s.hostname}</option>`)
+        .join('');
+
+      /* Restore previous selection if it still exists, else keep first */
+      if (current && systems.find(s => String(s.id) === current)) {
+        systemSelect.value = current;
+      }
+
+      systemMeta.textContent = systems.length
+        ? `${systems.length} system${systems.length === 1 ? '' : 's'} enrolled`
+        : 'no systems found';
+    } catch (e) {
+      systemMeta.textContent = 'could not load systems';
+    }
+  }
+
+  /* ── CHANGE: fetch /ml-status/{system_id} using the selected system ── */
+  async function load() {
+    const systemId = systemSelect.value;
+
+    if (!systemId) {
+      elEmptyState.innerHTML = `<div class="state-block" style="padding:28px 24px">
+        ${ICONS.server}
+        <h4>No system selected</h4>
+        <p>Select a system from the dropdown above to view its ML prediction.</p>
+      </div>`;
+      return;
+    }
+
+    try {
+      /* Direct fetch — /ml-status/{id} returns a plain object, not an array */
+      const res = await fetch(`${ENDPOINTS.mlStatus}/${systemId}`, {
+        headers: { Accept: 'application/json' }
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      render(data);
+    } catch (err) {
+      elEmptyState.innerHTML = errorState(load, `ML status for system ${systemId}`);
+    }
+  }
+
+  /* ── Boot ── */
+  systemSelect.addEventListener('change', load);
+
+  /* Populate systems first, then start polling */
+  populateSystems().then(load);
+  setInterval(() => { populateSystems(); load(); }, POLL_INTERVAL_MS);
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard · SENTRYX EDR</title>
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-page="dashboard">
+
+<div class="sidebar-scrim" id="sidebarScrim"></div>
+<div class="app-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04141a" stroke-width="2"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"/></svg>
+      </div>
+      <div class="brand-text">
+        <span class="name">SENTRYX</span>
+        <span class="sub">Behavioral EDR</span>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operations</div>
+    <nav class="nav">
+      <a href="dashboard.html" class="nav-item" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="systems.html" class="nav-item" data-page="systems">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="6" rx="1.4"/><rect x="3" y="14" width="18" height="6" rx="1.4"/><circle cx="7" cy="7" r=".6" fill="currentColor"/><circle cx="7" cy="17" r=".6" fill="currentColor"/></svg>
+        <span>Systems</span>
+      </a>
+      <a href="monitoring.html" class="nav-item" data-page="monitoring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
+        <span>Monitoring</span>
+      </a>
+      <a href="alerts.html" class="nav-item" data-page="alerts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9a4 4 0 0 1 4 4v4H8v-4a4 4 0 0 1 4-4z"/><path d="M12 3v2M5 13H3M21 13h-2M6.3 6.3 5 5M17.7 6.3 19 5"/><rect x="6" y="17" width="12" height="3" rx="1"/></svg>
+        <span>Alerts</span>
+      </a>
+      <a href="processes.html" class="nav-item" data-page="processes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 10h10M4 14h12M4 18h8"/><circle cx="19" cy="15" r="3"/><path d="M19 12.5V12M19 18v-.5M16.8 13.3l-.35-.35M21.55 16.7l.35.35M16 15h-.5M22.5 15H22M16.8 16.7l-.35.35M21.55 13.3l.35-.35"/></svg>
+        <span>Processes</span>
+      </a>
+      <a href="anomalies.html" class="nav-item" data-page="anomalies">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-1.5 5.5A3 3 0 0 0 7 18a3 3 0 0 0 5 1.8A3 3 0 0 0 17 18a3 3 0 0 0 2.5-5.5A3 3 0 0 0 18 7a3 3 0 0 0-4-2.8A3 3 0 0 0 9 4z"/><path d="M9 4v16M15 4v16"/></svg>
+        <span>Anomaly Detection</span>
+        <span class="nav-badge">Beta</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="conn-pill" id="connPill">
+        <span class="live-dot"></span>
+        <span class="label">API</span>
+        <span class="stat">CHECKING</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="page-heading">
+        <h1>Dashboard Overview</h1>
+        <div class="crumb">
+          <span>SOC Console</span><span class="dot"></span>
+          <span class="live"><span class="live-dot"></span> Live</span>
+        </div>
+      </div>
+      <label class="topbar-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" placeholder="Search hosts, alerts, IOCs…" id="globalSearch" />
+      </label>
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="avatar">SC</div>
+    </header>
+
+    <main class="content">
+
+      <div class="stat-grid" id="statGrid"></div>
+
+      <div class="dash-grid">
+        <div class="card panel">
+          <div class="panel-head">
+            <h3>Recent Activity</h3>
+            <span class="meta" id="activityMeta">—</span>
+          </div>
+          <div id="activityFeed" class="activity-feed"></div>
+        </div>
+
+        <div class="card panel">
+          <div class="panel-head">
+            <h3>Alert Severity Mix</h3>
+            <span class="meta" id="severityMeta">last 24h</span>
+          </div>
+          <div class="chart-canvas-wrap tall"><canvas id="severityChart"></canvas></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+/* ==========================================================================
+   Dashboard page logic
+   ========================================================================== */
+(function(){
+  const { ICONS, getJSON, ENDPOINTS, normalizeSystem, normalizeAlert, normalizeUsage,
+          timeAgo, isRecent, loadingRows, emptyState, errorState, POLL_INTERVAL_MS } = SENTRYX;
+
+  const statGrid = document.getElementById("statGrid");
+  const activityFeed = document.getElementById("activityFeed");
+  const activityMeta = document.getElementById("activityMeta");
+  let severityChart = null;
+
+  function statCard({icon, cls, label, value, sub}) {
+    return `<div class="card stat-card">
+      <div class="stat-top">
+        <div class="stat-icon ${cls}">${icon}</div>
+      </div>
+      <div class="stat-value">${value}</div>
+      <div class="stat-label">${label}</div>
+      ${sub ? `<div class="stat-label" style="margin-top:6px;color:var(--text-faint);font-size:11px">${sub}</div>` : ""}
+    </div>`;
+  }
+
+  function healthCard(score) {
+    const pct = Math.max(0, Math.min(100, score));
+    const circumference = 2 * Math.PI * 26;
+    const dash = (pct/100) * circumference;
+    const color = pct >= 80 ? "var(--success)" : pct >= 50 ? "var(--warning)" : "var(--danger)";
+    return `<div class="card stat-card health-card">
+      <div class="gauge-wrap">
+        <svg viewBox="0 0 64 64">
+          <circle class="gauge-bg" cx="32" cy="32" r="26"/>
+          <circle class="gauge-fg" cx="32" cy="32" r="26" stroke="${color}"
+            stroke-dasharray="${dash} ${circumference}"/>
+        </svg>
+        <div class="gauge-num">${Math.round(pct)}</div>
+      </div>
+      <div>
+        <div class="stat-value" style="font-size:18px">${pct >= 80 ? "Healthy" : pct >= 50 ? "Degraded" : "At Risk"}</div>
+        <div class="stat-label">System Health Score</div>
+      </div>
+    </div>`;
+  }
+
+  function renderSkeletonStats() {
+    statGrid.innerHTML = Array.from({length: 5}).map(() => `
+      <div class="card stat-card">
+        <div class="skel skel-row w-40" style="height:28px;width:34px;border-radius:9px"></div>
+        <div class="skel skel-row w-60" style="height:24px;margin-top:16px"></div>
+        <div class="skel skel-row w-80" style="height:11px"></div>
+      </div>`).join("");
+  }
+
+  function activityRow(a) {
+    const sevColor = { critical:"danger", high:"danger", medium:"warning", low:"cyan" }[a.severity] || "cyan";
+    return `<div class="activity-row">
+      <div class="activity-icon stat-icon ${sevColor}">${ICONS.siren}</div>
+      <div class="activity-body">
+        <div class="activity-title">${a.type}${a.hostname ? ` · ${a.hostname}` : ""}</div>
+        <div class="activity-sub">${a.message || "Detected by behavioral analytics engine"}</div>
+      </div>
+      <div class="activity-time">${timeAgo(a.timestamp)}</div>
+    </div>`;
+  }
+
+  async function load() {
+    renderSkeletonStats();
+    activityFeed.innerHTML = `<div class="state-block" style="padding:30px"><div class="spinner"></div></div>`;
+
+    let systems = [], alerts = [], usage = [];
+    let systemsErr = false, alertsErr = false, usageErr = false;
+
+    await Promise.all([
+      getJSON(ENDPOINTS.systems).then(d => systems = d.map(normalizeSystem)).catch(() => systemsErr = true),
+      getJSON(ENDPOINTS.alerts).then(d => alerts = d.map(normalizeAlert)).catch(() => alertsErr = true),
+      getJSON(ENDPOINTS.resourceUsage).then(d => usage = d.map(normalizeUsage)).catch(() => usageErr = true),
+    ]);
+
+    console.log("Systems:", systems);
+    console.log("Alerts:", alerts);
+    console.log("Usage:", usage);
+
+
+    // ---- Stat values derived from real API data ----
+    const totalEndpoints = systems.length;
+    const onlineEndpoints = systems.filter(s => isRecent(s.lastSeen, 5 * 60000)).length;
+    const activeAlerts = alerts.filter(a => a.status !== "resolved").length;
+    const resolvedAlerts = alerts.filter(a => a.status === "resolved").length;
+    const reportsReceived = usage.length;
+
+    // Health score: penalize for active critical/high alerts and high average resource load
+    const avgLoad = usage.length
+      ? usage.reduce((s,u) => s + ((u.cpu||0)+(u.memory||0)+(u.disk||0))/3, 0) / usage.length
+      : 0;
+    const criticalPenalty = alerts.filter(a => a.severity === "critical" && a.status !== "resolved").length * 8;
+    const highPenalty = alerts.filter(a => a.severity === "high" && a.status !== "resolved").length * 4;
+    const healthScore = Math.max(0, Math.min(100, 100 - (avgLoad * 0.35) - criticalPenalty - highPenalty));
+
+    if (systemsErr && alertsErr && usageErr) {
+      statGrid.innerHTML = `<div class="card" style="grid-column:1/-1">${errorState(load, "dashboard metrics")}</div>`;
+    } else {
+      statGrid.innerHTML = [
+        statCard({icon: ICONS.server, cls: "cyan", label: "Total Endpoints", value: totalEndpoints, sub: systems.length
+        ? systems[0].hostname
+        : "No systems connected"}),
+        statCard({icon: ICONS.siren, cls: "danger", label: "Active Alerts", value: activeAlerts, sub:`${new Set(alerts.filter(a => a.status !== "resolved").map(a => a.systemId)).size} affected endpoint(s)`}),
+        statCard({icon: ICONS.check, cls: "success", label: "Resolved Alerts", value: resolvedAlerts, sub: "All-time closed"}),
+        statCard({icon: ICONS.activity, cls: "violet", label: "Reports Received", value: reportsReceived, sub: "Resource-usage telemetry"}),
+        healthCard(healthScore),
+      ].join("");
+    }
+
+    // ---- Activity feed: merge alerts + usage spikes, sort by recency ----
+    if (alertsErr && usageErr) {
+      activityFeed.innerHTML = errorState(load, "recent activity");
+    } else {
+      const events = [
+        ...alerts.map(a => ({ ...a, kind: "alert" })),
+      ].sort((a,b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)).slice(0, 12);
+
+      if (!events.length) {
+        activityFeed.innerHTML = emptyState({
+          icon: ICONS.activity,
+          title: "No activity yet",
+          body: "Once your endpoints start reporting alerts, they'll appear here in real time."
+        });
+      } else {
+        activityFeed.innerHTML = events.map(activityRow).join("");
+      }
+      activityMeta.textContent = `${events.length} events`;
+    }
+
+    // ---- Severity donut ----
+    renderSeverityChart(alerts);
+  }
+
+  function renderSeverityChart(alerts) {
+    const canvas = document.getElementById("severityChart");
+    const order = ["critical","high","medium","low"];
+    const counts = order.map(s => alerts.filter(a => a.severity === s).length);
+    const colors = ["#ff3b5c","#ff8c28","#ffb020","#5b8def"];
+
+    if (!alerts.length) {
+      canvas.parentElement.innerHTML = `<div class="state-block" style="padding:30px 10px">${SENTRYX.ICONS.shield}<h4>No alerts recorded</h4><p>Severity breakdown will populate once alerts start arriving from /alerts.</p></div>`;
+      return;
+    }
+    if (severityChart) severityChart.destroy();
+    severityChart = new Chart(canvas, {
+      type: "doughnut",
+      data: { labels: ["Critical","High","Medium","Low"], datasets: [{ data: counts, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }] },
+      options: {
+        cutout: "68%",
+        plugins: { legend: { position: "bottom", labels: { color: "#97a3ba", boxWidth: 10, font: { size: 11, family: "Inter" } } } },
+        maintainAspectRatio: false,
+      }
+    });
+  }
+
+  load();
+  setInterval(load, POLL_INTERVAL_MS);
+})();
+</script>
+</body>
+</html>

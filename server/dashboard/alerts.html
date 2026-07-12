@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alerts · SENTRYX EDR</title>
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body data-page="alerts">
+
+<div class="sidebar-scrim" id="sidebarScrim"></div>
+<div class="app-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04141a" stroke-width="2"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"/></svg>
+      </div>
+      <div class="brand-text">
+        <span class="name">SENTRYX</span>
+        <span class="sub">Behavioral EDR</span>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operations</div>
+    <nav class="nav">
+      <a href="dashboard.html" class="nav-item" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="systems.html" class="nav-item" data-page="systems">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="6" rx="1.4"/><rect x="3" y="14" width="18" height="6" rx="1.4"/><circle cx="7" cy="7" r=".6" fill="currentColor"/><circle cx="7" cy="17" r=".6" fill="currentColor"/></svg>
+        <span>Systems</span>
+      </a>
+      <a href="monitoring.html" class="nav-item" data-page="monitoring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
+        <span>Monitoring</span>
+      </a>
+      <a href="alerts.html" class="nav-item" data-page="alerts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9a4 4 0 0 1 4 4v4H8v-4a4 4 0 0 1 4-4z"/><path d="M12 3v2M5 13H3M21 13h-2M6.3 6.3 5 5M17.7 6.3 19 5"/><rect x="6" y="17" width="12" height="3" rx="1"/></svg>
+        <span>Alerts</span>
+      </a>
+      <a href="processes.html" class="nav-item" data-page="processes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 10h10M4 14h12M4 18h8"/><circle cx="19" cy="15" r="3"/><path d="M19 12.5V12M19 18v-.5M16.8 13.3l-.35-.35M21.55 16.7l.35.35M16 15h-.5M22.5 15H22M16.8 16.7l-.35.35M21.55 13.3l.35-.35"/></svg>
+        <span>Processes</span>
+      </a>
+      <a href="anomalies.html" class="nav-item" data-page="anomalies">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-1.5 5.5A3 3 0 0 0 7 18a3 3 0 0 0 5 1.8A3 3 0 0 0 17 18a3 3 0 0 0 2.5-5.5A3 3 0 0 0 18 7a3 3 0 0 0-4-2.8A3 3 0 0 0 9 4z"/><path d="M9 4v16M15 4v16"/></svg>
+        <span>Anomaly Detection</span>
+        <span class="nav-badge">Beta</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="conn-pill" id="connPill">
+        <span class="live-dot"></span>
+        <span class="label">API</span>
+        <span class="stat">CHECKING</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="page-heading">
+        <h1>Alerts</h1>
+        <div class="crumb">
+          <span>Threat Queue</span><span class="dot"></span>
+          <span class="live"><span class="live-dot"></span> Live</span>
+        </div>
+      </div>
+      <label class="topbar-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" placeholder="Search hosts, alerts, IOCs…" id="globalSearch" />
+      </label>
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="avatar">SC</div>
+    </header>
+    <main class="content">
+
+      <div class="toolbar">
+        <label class="search-input" style="flex:1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" id="alertSearch" placeholder="Search alert type, host, message…" />
+        </label>
+        <select class="select" id="sevFilter">
+          <option value="">All severities</option>
+          <option value="high">High</option>
+        </select>
+        <select class="select" id="statFilter">
+          <option value="">All statuses</option>
+          <option value="resolved">Resolved</option>
+        </select>
+        <button class="btn" id="alertRefresh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 0 1 15.3-6.4M21 12a9 9 0 0 1-15.3 6.4"/><path d="M19 4v5h-5M5 20v-5h5"/></svg>
+          Refresh
+        </button>
+      </div>
+
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Alert Type</th>
+                <th>Host</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="alertTableBody"></tbody>
+          </table>
+        </div>
+        <div class="table-foot">
+          <span id="alertCount">Loading alerts…</span>
+          <span>Auto-refreshes every 10s</span>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Alert detail drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+  <button class="drawer-close" id="drawerClose">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+  </button>
+  <span class="badge" id="drawerSeverity"></span>
+  <h3 id="drawerTitle">—</h3>
+  <div class="drawer-meta-row"><span class="k">Host</span><span class="v" id="drawerHost">—</span></div>
+  <div class="drawer-meta-row"><span class="k">Status</span><span class="v" id="drawerStatus">—</span></div>
+  <div class="drawer-meta-row"><span class="k">Detected</span><span class="v" id="drawerTime">—</span></div>
+  <div class="drawer-meta-row"><span class="k">Alert ID</span><span class="v mono" id="drawerId">—</span></div>
+  <div class="drawer-desc" id="drawerDesc">—</div>
+</aside>
+
+<script src="app.js"></script>
+<script>
+/* ==========================================================================
+   Alerts page logic — GET /alerts, render table + detail drawer
+   ========================================================================== */
+(function(){
+  const { ICONS, getJSON, ENDPOINTS, normalizeAlert, emptyState, errorState, POLL_INTERVAL_MS } = SENTRYX;
+
+  const tbody = document.getElementById("alertTableBody");
+  const alertCount = document.getElementById("alertCount");
+  const searchInput = document.getElementById("alertSearch");
+  const sevFilter = document.getElementById("sevFilter");
+  const statFilter = document.getElementById("statFilter");
+  const refreshBtn = document.getElementById("alertRefresh");
+
+  const drawer = document.getElementById("drawer");
+  const drawerOverlay = document.getElementById("drawerOverlay");
+  const drawerClose = document.getElementById("drawerClose");
+
+  let allAlerts = [];
+
+  function escapeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+  function fmtTimestamp(ts) {
+    if (!ts) return "—";
+    const d = new Date(ts.replace ? ts.replace(" ", "T") : ts);
+    return isNaN(d) ? String(ts) : d.toLocaleString();
+  }
+
+  function row(a) {
+    return `<tr class="clickable" data-id="${escapeHtml(a.id)}">
+      <td>
+        <div class="cell-main">${escapeHtml(a.type)}</div>
+        ${a.message ? `<div class="cell-sub">${escapeHtml(a.message).slice(0,64)}${a.message.length>64?"…":""}</div>` : ""}
+      </td>
+      <td class="mono">${escapeHtml(a.hostname || a.systemId || "—")}</td>
+      <td><span class="badge sev-${escapeHtml(a.severity)}">${escapeHtml(a.severity)}</span></td>
+      <td><span class="badge st-${escapeHtml(a.status)}">${escapeHtml(a.status)}</span></td>
+      <td class="mono">${fmtTimestamp(a.timestamp)}</td>
+    </tr>`;
+  }
+
+  function applyFiltersAndRender() {
+    const q = searchInput.value.trim().toLowerCase();
+    const sev = sevFilter.value;
+    const st = statFilter.value;
+
+    const filtered = allAlerts.filter(a => {
+      const matchesQ = !q || [a.type, a.hostname, a.message].join(" ").toLowerCase().includes(q);
+      const matchesSev = !sev || a.severity === sev;
+      const matchesSt = !st || a.status === st;
+      return matchesQ && matchesSev && matchesSt;
+    }).sort((a,b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+    if (!allAlerts.length) {
+      tbody.innerHTML = `<tr><td colspan="5">${emptyState({
+        icon: ICONS.shield,
+        title: "No alerts detected",
+        body: "Your environment is quiet. New detections from /alerts will appear here the moment they fire."
+      })}</td></tr>`;
+    } else if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="5">${emptyState({
+        icon: ICONS.search,
+        title: "No matching alerts",
+        body: "Adjust your search or clear the severity/status filters to see more results."
+      })}</td></tr>`;
+    } else {
+      tbody.innerHTML = filtered.map(row).join("");
+      tbody.querySelectorAll("tr.clickable").forEach(tr => {
+        tr.addEventListener("click", () => openDrawer(tr.dataset.id));
+      });
+    }
+    alertCount.textContent = `${filtered.length} of ${allAlerts.length} alert${allAlerts.length === 1 ? "" : "s"}`;
+  }
+
+  function openDrawer(id) {
+    const a = allAlerts.find(x => String(x.id) === String(id));
+    if (!a) return;
+    document.getElementById("drawerSeverity").className = `badge sev-${a.severity}`;
+    document.getElementById("drawerSeverity").textContent = a.severity;
+    document.getElementById("drawerTitle").textContent = a.type;
+    document.getElementById("drawerHost").textContent = a.hostname || a.systemId || "—";
+    document.getElementById("drawerStatus").textContent = a.status;
+    document.getElementById("drawerTime").textContent = fmtTimestamp(a.timestamp);
+    document.getElementById("drawerId").textContent = a.id;
+    document.getElementById("drawerDesc").textContent = a.message || "No further detail was provided by the detection engine for this alert.";
+    drawer.classList.add("show");
+    drawerOverlay.classList.add("show");
+  }
+  function closeDrawer() {
+    drawer.classList.remove("show");
+    drawerOverlay.classList.remove("show");
+  }
+  drawerClose.addEventListener("click", closeDrawer);
+  drawerOverlay.addEventListener("click", closeDrawer);
+
+  async function load() {
+    if (!allAlerts.length) tbody.innerHTML = SENTRYX.loadingRows(5, 5);
+    try {
+      const data = await getJSON(ENDPOINTS.alerts);
+      allAlerts = data.map(normalizeAlert);
+      applyFiltersAndRender();
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="5">${errorState(load, "alert queue")}</td></tr>`;
+      alertCount.textContent = "Connection error";
+    }
+  }
+
+  searchInput.addEventListener("input", applyFiltersAndRender);
+  sevFilter.addEventListener("change", applyFiltersAndRender);
+  statFilter.addEventListener("change", applyFiltersAndRender);
+  refreshBtn.addEventListener("click", load);
+
+  load();
+  setInterval(load, POLL_INTERVAL_MS);
+})();
+</script>
+</body>
+</html>
